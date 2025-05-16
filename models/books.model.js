@@ -8,11 +8,55 @@ class BooksModel {
 
   static async getAllBooks(page, limit) {
     const res = await this.collection()
-      .find({})
-      .skip(Number(page) * Number(limit))
-      .limit(Number(limit))
+      .aggregate([
+        {
+          $lookup: {
+            from: 'authors',
+            localField: 'authorId',
+            foreignField: '_id',
+            as: 'author',
+          },
+        },
+        {
+          $unwind: {
+            path: '$author',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $skip: Number(page) * Number(limit),
+        },
+        {
+          $limit: Number(limit),
+        },
+      ])
       .toArray();
     return res;
+  }
+
+  static async getBookById(id) {
+    const res = await this.collection()
+      .aggregate([
+        {
+          $match: { _id: new ObjectId(id) },
+        },
+        {
+          $lookup: {
+            from: 'authors',
+            localField: 'authorId',
+            foreignField: '_id',
+            as: 'author',
+          },
+        },
+        {
+          $unwind: {
+            path: '$author',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+      ])
+      .toArray();
+    return res[0];
   }
 
   static async postBook(payload) {
