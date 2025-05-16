@@ -64,6 +64,10 @@ class BooksModel {
     return res;
   }
 
+  static async createBook(payload) {
+    return this.postBook(payload);
+  }
+
   static async deleteBook(id) {
     const res = await this.collection().deleteOne({ _id: new ObjectId(id) });
     return res;

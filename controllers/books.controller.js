@@ -45,6 +45,10 @@ class Books {
     }
   }
 
+  static async createBook(req, res, next) {
+    return this.addBook(req, res, next);
+  }
+
   static async deleteBook(req, res, next) {
     try {
       const { id } = req.params;

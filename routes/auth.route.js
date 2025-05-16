@@ -2,7 +2,7 @@ const router = require('express').Router();
 const authController = require('../controllers/authentication.controller.js');
 
 router.get('/', (req, res) => {
-  res.json({ message: 'This is auth endpoint, go to /login or /register' });
+  return res.status(200).json({ message: 'Authentication endpoint' });
 });
 
 router.post('/login', authController.Login);
