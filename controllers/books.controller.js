@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-const appError = require('../middlewares/appError.js');
 const BooksModel = require('../models/books.model');
 const AppError = require('../middlewares/appError.js');
 
@@ -63,7 +62,7 @@ class Books {
       const data = req.body;
 
       const foundBook = await BooksModel.getBookById(id);
-      if (!foundBook) throw new appError('Book Not Found!', 404, 'NOT FOUND');
+      if (!foundBook) throw new AppError('Book Not Found!', 404, 'NOT FOUND');
 
       const updatedBook = {
         title: data.title,

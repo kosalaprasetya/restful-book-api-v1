@@ -1,18 +1,18 @@
 const jwt = require('../lib/jwt.js');
 const bcrypt = require('../lib/bcrypt.js');
-const userModel = require('../models/users.model.js');
-const appError = require('../middlewares/appError.js');
+const UserModel = require('../models/users.model.js');
+const AppError = require('../middlewares/appError.js');
 
 class Authentication {
   static async Register(req, res, next) {
     try {
       const { name, email, password } = req.body;
-      if (!name) throw new appError('Name is required!', 400, 'BAD REQUEST');
-      if (!email) throw new appError('Email is required!', 400, 'BAD REQUEST');
-      if (!password) throw new appError('Password is required!', 400, 'BAD REQUEST');
+      if (!name) throw new AppError('Name is required!', 400, 'BAD REQUEST');
+      if (!email) throw new AppError('Email is required!', 400, 'BAD REQUEST');
+      if (!password) throw new AppError('Password is required!', 400, 'BAD REQUEST');
 
-      const foundUserEmail = await userModel.findUserByEmail(email);
-      if (foundUserEmail) throw new appError('Email has been taken', 403, 'FORBIDDEN');
+      const foundUserEmail = await UserModel.findUserByEmail(email);
+      if (foundUserEmail) throw new AppError('Email has been taken', 403, 'FORBIDDEN');
 
       const newUser = {
         name,
@@ -20,7 +20,7 @@ class Authentication {
         password: await bcrypt.hashPassword(password),
       };
 
-      const createdUser = await userModel.createUser(newUser);
+      const createdUser = await UserModel.createUser(newUser);
       res.status(201).json({ success: 'true', id: createdUser.insertedId });
     } catch (error) {
       next(error);
@@ -31,11 +31,11 @@ class Authentication {
     try {
       const { email, password } = req.body;
 
-      const foundUser = await userModel.findUserByEmail(email);
-      if (!foundUser) throw new appError('User Not Found!', 404, 'NOT FOUND');
+      const foundUser = await UserModel.findUserByEmail(email);
+      if (!foundUser) throw new AppError('User Not Found!', 404, 'NOT FOUND');
 
       const isValidPassword = await bcrypt.comparePassword(password, foundUser.password);
-      if (!isValidPassword) throw new appError('Invalid Credentials!', 401, 'UNAUTHORIZED');
+      if (!isValidPassword) throw new AppError('Invalid Credentials!', 401, 'UNAUTHORIZED');
 
       const payload = {
         _id: foundUser._id,
