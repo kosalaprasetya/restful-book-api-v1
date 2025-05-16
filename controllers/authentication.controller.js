@@ -1,6 +1,6 @@
 const jwt = require('../lib/jwt.js');
 const bcrypt = require('../lib/bcrypt.js');
-const userModel = require('../models/user.model.js');
+const userModel = require('../models/users.model.js');
 const appError = require('../middlewares/appError.js');
 
 class Authentication {
